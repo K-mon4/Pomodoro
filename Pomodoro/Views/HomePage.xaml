@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Pomodoro.Views.HomePage"
+             Title="HomePage"
+             BindingContext="">
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Add" IconImageSource="{FontImage Glyph='+', Color=White, Size=22}" />
+    </ContentPage.ToolbarItems>
+    <VerticalStackLayout>
+        <CollectionView x:Name="todoCollection"
+                        SelectionMode="Single"
+                        SelectionChanged="todoCollection_SelectionChanged"
+                        HeightRequest="400">
+            <CollectionView.ItemsLayout>
+                <LinearItemsLayout Orientation="Vertical" ItemSpacing="10"/>
+
+            </CollectionView.ItemsLayout>
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <StackLayout>
+                        <Label Text="{Binding TodoName}" FontSize="22"/>
+                        <Label Text="{Binding LastDone}" FontSize="14" TextColor="Silver"/>
+                    </StackLayout>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+
+        <HorizontalStackLayout>
+
+            <Picker x:Name="todoPicker" Title="select todo" HeightRequest="50" WidthRequest="200" BackgroundColor="Aqua" />
+            <Button x:Name="startBtn" Text="Start" HeightRequest="50" WidthRequest="100" />
+        </HorizontalStackLayout>
+        
+    </VerticalStackLayout>
+</ContentPage>

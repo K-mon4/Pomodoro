@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Pomodoro.Views.TimerPage"
+             Title="TimerPage">
+    <VerticalStackLayout>
+        <Label
+            x:Name="todoNameLabel"
+            Text="{Binding TodoName}"
+            VerticalOptions="Center" 
+            HorizontalOptions="Center"
+            FontSize="22"/>
+
+        <HorizontalStackLayout HorizontalOptions="Center">
+            <Label Text="{Binding StartedTimeText}"/>
+            <Label Text="{Binding ExpectedEndTimeText}"/>
+
+        </HorizontalStackLayout>
+        <Label x:Name="timerValue"
+               FontSize="30"
+               Text="{Binding TimerValueText}"/>
+        <HorizontalStackLayout HorizontalOptions="Center">
+            <Button
+                x:Name="timerSubBtn"
+                Text="-"/>
+            <Label
+                x:Name="timeMLabel"
+                Text="{Binding TimeMeasuringText}"
+                HorizontalOptions="Center"
+                FontSize="15"
+                TextColor="Gray"
+                />
+            <Button
+                x:Name="timerAddBtn"
+                Text="+"
+                />
+        </HorizontalStackLayout>
+        <Button
+            x:Name="timerControllBtn"
+            Text="MAUI"
+            HorizontalOptions="Center"/>
+        
+    </VerticalStackLayout>
+</ContentPage>
