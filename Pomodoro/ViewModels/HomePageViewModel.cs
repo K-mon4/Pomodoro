@@ -17,7 +17,8 @@ public class HomePageViewModel : INotifyPropertyChanged
 
     public ObservableCollection<Todo> TodoList { get; set; } = new ObservableCollection<Todo>();
 
-	private Todo _todoSelected = new Todo("Do");
+	private Todo _todoSelected;
+
 	public Todo TodoSelected
 	{
 		get => _todoSelected;
@@ -37,6 +38,14 @@ public class HomePageViewModel : INotifyPropertyChanged
 	{
 		
 		TodoList = new ObservableCollection<Todo>(todolf.GetTodoList());
+		if (TodoList.FirstOrDefault() != null)
+		{
+			TodoSelected = TodoList.FirstOrDefault();
+		}
+		else
+		{
+			TodoSelected = new Todo("");
+		}
 	}
 
     

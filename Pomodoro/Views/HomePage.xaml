@@ -30,7 +30,7 @@
 
         <HorizontalStackLayout>
 
-            <Button x:Name="todoSelectBtn" HeightRequest="50" WidthRequest="100"/>
+            <Button x:Name="todoSelectBtn" Text="{Binding TodoName}" HeightRequest="50" WidthRequest="100"/>
             <Button x:Name="startBtn" Text="Start" HeightRequest="50" WidthRequest="100" />
         </HorizontalStackLayout>
         

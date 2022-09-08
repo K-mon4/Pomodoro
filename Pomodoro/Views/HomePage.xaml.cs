@@ -17,6 +17,9 @@ public partial class HomePage : ContentPage
         startBtn.Clicked += homePageViewModel.createTimerPage;
 
         todoSelectBtn.Clicked += todoSelectBtnClicked;
+
+        todoSelectBtn.BindingContext = homePageViewModel.TodoSelected;
+
 	}
 
 
@@ -29,8 +32,8 @@ public partial class HomePage : ContentPage
 
         if(result is Todo todoResult)
         {
-            this.todoSelectBtn.Text = todoResult.TodoName;
             homePageViewModel.TodoSelected = todoResult;
+            todoSelectBtn.Text = todoResult.TodoName;
         }
     }
 

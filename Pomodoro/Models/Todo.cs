@@ -1,10 +1,13 @@
-﻿
+﻿using System.ComponentModel;
 namespace Pomodoro.Models;
 
-public class Todo 
+public class Todo : INotifyPropertyChanged
 {
-	
-	public string TodoName { get; set; }
+	public string TodoName
+	{
+		get;
+		set;
+	}
 
 	public DateTime? LastDone { get; set; }
 
@@ -12,4 +15,6 @@ public class Todo
 	{
 		TodoName = name;
 	}
+
+	public event PropertyChangedEventHandler PropertyChanged;
 }
