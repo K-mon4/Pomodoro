@@ -47,7 +47,7 @@ public class TimerPageViewModel : INotifyPropertyChanged
 	/// </summary>
 
 	JsonIO jsoninterface = new JsonIO();
-	TaskCompletionSource<TimerEvent> tcs = new TaskCompletionSource<TimerEvent>();
+	// TaskCompletionSource<TimerEvent> tcs = new TaskCompletionSource<TimerEvent>();
 
 	// Property Definition
 	private string _todoname;
@@ -73,7 +73,7 @@ public class TimerPageViewModel : INotifyPropertyChanged
 		}
 	}
 	private string _startedtimeText;
-	private string StartedTimeText
+	public string StartedTimeText
 	{
 		get => _startedtimeText;
 		set
@@ -84,7 +84,7 @@ public class TimerPageViewModel : INotifyPropertyChanged
 
 
     private DateTime _expectedEndTime;
-	private DateTime ExpectedEndtime
+	public DateTime ExpectedEndtime
 	{
 		get => _expectedEndTime;
 		set
@@ -95,7 +95,7 @@ public class TimerPageViewModel : INotifyPropertyChanged
 		}
 	}
 	private string _expectedEndTimeText;
-	private string ExpectedEndTimeText
+	public string ExpectedEndTimeText
 	{
 		get => _expectedEndTimeText;
 		set
@@ -112,10 +112,10 @@ public class TimerPageViewModel : INotifyPropertyChanged
 		{
 			_timeMeasuring = value;
 			
-			if(timerState != null)
-			{
-				ExpectedEndtime = StartedTime + _timeMeasuring;
-			}
+			//if(timerState != null)
+			//{
+			//	ExpectedEndtime = StartedTime + _timeMeasuring;
+			//}
 			this.TimeMeasuringText = _timeMeasuring.ToString("mm");
 			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(TimeMeasuringText)));
 		}
@@ -183,31 +183,29 @@ public class TimerPageViewModel : INotifyPropertyChanged
 		StartTimer();
 	}
 
+	// set a timer for pomodoro and start it automatically
 	public void StartTimer()
 	{
-		
+		//
 		timerMode = TimerMode.Pomodoro;
 
-		// set initial timer value and time measuring
+		// set timemeasuring
 		//
-		// InitializeTimer();
+		InitializeTimer();
 		
 		StartTimerLoop();
 	}
 
 	private void InitializeTimer()
 	{
-		timerState = TimerState.Counting;
 
 		switch(this.timerMode)
 		{
 			case TimerMode.Pomodoro:
 				this.TimeMeasuring = this.timerDurations.Pomodoro;
-				this.TimerValue = this.timerDurations.Pomodoro;
 				break;
 			case TimerMode.ShortBreak:
 				this.TimeMeasuring = this.timerDurations.ShortBreak;
-				this.TimerValue = this.timerDurations.ShortBreak;
 				break;
 			default:
 				break;
@@ -218,12 +216,16 @@ public class TimerPageViewModel : INotifyPropertyChanged
 	{
 
 		TimeSpan timeleft = this.TimeMeasuring;
-		DateTime timerstarted = DateTime.Now;
-		DateTime expectedEndtime = timerstarted += this.TimeMeasuring;
+		StartedTime = DateTime.Now;
+		ExpectedEndtime = StartedTime + this.TimeMeasuring;
 		TimeSpan timepast = TimeSpan.Zero;
 
+		//
+        timerState = TimerState.Counting;
 
-		while(true)
+
+        this.TimerValue = timeleft;
+        while (true)
 		{
 			while(true)
 			{
@@ -237,10 +239,11 @@ public class TimerPageViewModel : INotifyPropertyChanged
 				{
 					// Save log to json file
 					// Started time, finished time,
-					jsoninterface.SavePlogToJson(timerstarted, DateTime.Now, TodoName);
+					jsoninterface.SavePlogToJson(StartedTime, DateTime.Now, TodoName);
 					break;
 				}
-                if (this.ExpectedEndtime > DateTime.Now)
+
+                if (this.ExpectedEndtime < DateTime.Now)
                 {
                     this.timerState = TimerState.Overtime;
 
@@ -250,7 +253,7 @@ public class TimerPageViewModel : INotifyPropertyChanged
 				{
 					this.timerState = TimerState.Counting;
                     // count the time
-					timepast = DateTime.Now - timerstarted;
+					timepast = DateTime.Now - StartedTime;
                     timeleft = this.TimeMeasuring - timepast;
 
                     // update view
@@ -285,6 +288,7 @@ public class TimerPageViewModel : INotifyPropertyChanged
 			}
 		}
 	}
+
 	// TODO
 	public void ControllBtn_Clicked(Object sender, EventArgs e)
 	{
@@ -292,7 +296,7 @@ public class TimerPageViewModel : INotifyPropertyChanged
         {
             if (this.timerState == TimerState.Counting)
             {
-
+				
             }
             else
             {
@@ -308,16 +312,23 @@ public class TimerPageViewModel : INotifyPropertyChanged
         }
     }
 
+
 	// TODO 改良の余地あり
 	public void TimerAdd(Object s, EventArgs e)
 	{
 		TimeMeasuring += TimeSpan.FromMinutes(5);
 		TimerValue += TimeSpan.FromMinutes(5);
+		this.ExpectedEndtime = StartedTime + TimeMeasuring;
 	}
 	public void TimerSubtract(Object s, EventArgs e)
 	{
-		TimeMeasuring -= TimeSpan.FromMinutes(5);
-		TimerValue -= TimeSpan.FromMinutes(5);
+		if((TimeMeasuring - TimeSpan.FromMinutes(5)) > TimeSpan.Zero)
+		{
+            TimeMeasuring -= TimeSpan.FromMinutes(5);
+            TimerValue -= TimeSpan.FromMinutes(5);
+            this.ExpectedEndtime = StartedTime + TimeMeasuring;
+        }
+		
 	}
 
 	public event PropertyChangedEventHandler PropertyChanged;

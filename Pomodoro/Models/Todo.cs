@@ -4,7 +4,12 @@ namespace Pomodoro.Models;
 public class Todo 
 {
 	
-	public string name;
+	public string TodoName { get; set; }
 
-	public DateTime? lastDone;
+	public DateTime? LastDone { get; set; }
+
+	public Todo(string name)
+	{
+		TodoName = name;
+	}
 }

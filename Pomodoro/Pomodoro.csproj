@@ -49,6 +49,7 @@
 	  <None Remove="Views\" />
 	  <None Remove="Models\" />
 	  <None Remove="ViewModels\" />
+	  <None Remove="CommunityToolkit.Maui" />
 	</ItemGroup>
 	<ItemGroup>
 	  <Folder Include="Views\" />
@@ -65,5 +66,11 @@
 	  <MauiXaml Update="Views\LogPage.xaml">
 	    <SubType></SubType>
 	  </MauiXaml>
+	  <MauiXaml Update="Views\todoSelectorPopup.xaml">
+	    <SubType></SubType>
+	  </MauiXaml>
+	</ItemGroup>
+	<ItemGroup>
+	  <PackageReference Include="CommunityToolkit.Maui" Version="1.2.0" />
 	</ItemGroup>
 </Project>

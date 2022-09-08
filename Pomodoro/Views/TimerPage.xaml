@@ -10,15 +10,15 @@
             VerticalOptions="Center" 
             HorizontalOptions="Center"
             FontSize="22"/>
-
-        <HorizontalStackLayout HorizontalOptions="Center">
+        <HorizontalStackLayout HorizontalOptions="Center" Spacing="20">
             <Label Text="{Binding StartedTimeText}"/>
             <Label Text="{Binding ExpectedEndTimeText}"/>
 
         </HorizontalStackLayout>
         <Label x:Name="timerValue"
                FontSize="30"
-               Text="{Binding TimerValueText}"/>
+               Text="{Binding TimerValueText}"
+               HorizontalOptions="Center"/>
         <HorizontalStackLayout HorizontalOptions="Center">
             <Button
                 x:Name="timerSubBtn"

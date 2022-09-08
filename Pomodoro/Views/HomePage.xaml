@@ -11,7 +11,8 @@
         <CollectionView x:Name="todoCollection"
                         SelectionMode="Single"
                         SelectionChanged="todoCollection_SelectionChanged"
-                        HeightRequest="400">
+                        HeightRequest="400"
+                        ItemsSource="{Binding TodoList}">
             <CollectionView.ItemsLayout>
                 <LinearItemsLayout Orientation="Vertical" ItemSpacing="10"/>
 
@@ -29,9 +30,10 @@
 
         <HorizontalStackLayout>
 
-            <Picker x:Name="todoPicker" Title="select todo" HeightRequest="50" WidthRequest="200" BackgroundColor="Aqua" />
+            <Button x:Name="todoSelectBtn" HeightRequest="50" WidthRequest="100"/>
             <Button x:Name="startBtn" Text="Start" HeightRequest="50" WidthRequest="100" />
         </HorizontalStackLayout>
+        
         
     </VerticalStackLayout>
 </ContentPage>

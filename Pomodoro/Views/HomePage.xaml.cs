@@ -1,6 +1,11 @@
-﻿
+﻿using CommunityToolkit.Maui.Views;
+using Pomodoro.Models;
 using Pomodoro.ViewModels;
+
+
 namespace Pomodoro.Views;
+
+
 
 public partial class HomePage : ContentPage
 {
@@ -10,20 +15,27 @@ public partial class HomePage : ContentPage
 		InitializeComponent();
         BindingContext = homePageViewModel;
         startBtn.Clicked += homePageViewModel.createTimerPage;
+
+        todoSelectBtn.Clicked += todoSelectBtnClicked;
 	}
 
-    void tasksCollection_SelectionChanged(System.Object sender, Microsoft.Maui.Controls.SelectionChangedEventArgs e)
+
+    public async void todoSelectBtnClicked(Object s, EventArgs e)
     {
-    }
+        var selectMenuPop = new todoSelectorPopup();
+        selectMenuPop.BindingContext = homePageViewModel;
 
+        var result = await this.ShowPopupAsync(selectMenuPop);
 
-
-    void OnPickerSelectedIndexChanged()
-    {
-
+        if(result is Todo todoResult)
+        {
+            this.todoSelectBtn.Text = todoResult.TodoName;
+            homePageViewModel.TodoSelected = todoResult;
+        }
     }
 
     void todoCollection_SelectionChanged(System.Object sender, Microsoft.Maui.Controls.SelectionChangedEventArgs e)
     {
     }
+
 }
