@@ -50,6 +50,9 @@
 	  <None Remove="Models\" />
 	  <None Remove="ViewModels\" />
 	  <None Remove="CommunityToolkit.Maui" />
+	  <None Remove="System.Data.SQLite.Core" />
+	  <None Remove="sqlite-net-pcl" />
+	  <None Remove="SQLitePCLRaw.provider.dynamic_cdecl" />
 	</ItemGroup>
 	<ItemGroup>
 	  <Folder Include="Views\" />
@@ -72,5 +75,7 @@
 	</ItemGroup>
 	<ItemGroup>
 	  <PackageReference Include="CommunityToolkit.Maui" Version="1.2.0" />
+	  <PackageReference Include="sqlite-net-pcl" Version="1.8.116" />
+	  <PackageReference Include="SQLitePCLRaw.provider.dynamic_cdecl" Version="2.1.1" />
 	</ItemGroup>
 </Project>

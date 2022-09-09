@@ -18,8 +18,7 @@ public partial class HomePage : ContentPage
 
         todoSelectBtn.Clicked += todoSelectBtnClicked;
 
-        todoSelectBtn.BindingContext = homePageViewModel.TodoSelected;
-
+        AddBtn.Clicked += homePageViewModel.AddCommand;
 	}
 
 
@@ -33,12 +32,16 @@ public partial class HomePage : ContentPage
         if(result is Todo todoResult)
         {
             homePageViewModel.TodoSelected = todoResult;
-            todoSelectBtn.Text = todoResult.TodoName;
         }
+        
     }
 
     void todoCollection_SelectionChanged(System.Object sender, Microsoft.Maui.Controls.SelectionChangedEventArgs e)
     {
     }
 
+    
+
+
+    
 }

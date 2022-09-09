@@ -3,11 +3,13 @@ using Pomodoro.Models;
 
 namespace Pomodoro.ViewModels;
 
+// state to save to json
+// timer started  timer ended to do Name
 
 public enum TimerMode
 {
-	Pomodoro = 0,
-	ShortBreak = 1,
+	Pomodoro,
+	ShortBreak,
 }
 public struct TimerDurations
 {
@@ -26,11 +28,10 @@ public enum TimerState
 	Overtime,
 }
 
-public enum TimerEvent
+public enum TimerRequest
 {
 	NextStep,
 	Exit,
-	TimeAdd,
 }
 
 public class TimerPageViewModel : INotifyPropertyChanged
@@ -47,6 +48,12 @@ public class TimerPageViewModel : INotifyPropertyChanged
 	/// </summary>
 
 	JsonIO jsoninterface = new JsonIO();
+	public bool SaveStateJson()
+	{
+		// TimerStarted, Timer Ended(DateTime.Now), Name
+		return true;
+	}
+
 	// TaskCompletionSource<TimerEvent> tcs = new TaskCompletionSource<TimerEvent>();
 
 	// Property Definition
@@ -116,7 +123,16 @@ public class TimerPageViewModel : INotifyPropertyChanged
 			//{
 			//	ExpectedEndtime = StartedTime + _timeMeasuring;
 			//}
-			this.TimeMeasuringText = _timeMeasuring.ToString("mm");
+			if(TimeMeasuring > TimeSpan.FromMinutes(60))
+			{
+                this.TimeMeasuringText = _timeMeasuring.ToString("hh':'mm");
+
+            }
+			else
+			{
+                this.TimeMeasuringText = _timeMeasuring.ToString("mm");
+            }
+            
 			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(TimeMeasuringText)));
 		}
 	}
@@ -157,12 +173,27 @@ public class TimerPageViewModel : INotifyPropertyChanged
 			timervalue = value;
 			if (this.timerState == TimerState.Overtime)
 			{
-				TimerValueText = $"{this.TimeMeasuringText} + {(DateTime.Now - ExpectedEndtime).ToString("mm':'ss")}";
+				if(TimerValue > TimeSpan.FromMinutes(60))
+				{
+                    TimerValueText = $"{this.TimeMeasuringText} + {(DateTime.Now - ExpectedEndtime).ToString("hh':'mm':'ss")}";
+                }
+				else
+				{
+                    TimerValueText = $"{this.TimeMeasuringText} + {(DateTime.Now - ExpectedEndtime).ToString("'mm':'ss")}";
+                }
+				
 			}
 			else
 			{
-				TimerValueText = timervalue.ToString("mm':'ss");
-			}
+                if (TimerValue > TimeSpan.FromMinutes(60))
+                {
+                    TimerValueText = timervalue.ToString("hh':'mm':'ss");
+                }
+                else
+                {
+                    TimerValueText = timervalue.ToString("mm':'ss");
+                }
+            }
 			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TimerValueText"));
 		}
 	}
@@ -173,7 +204,7 @@ public class TimerPageViewModel : INotifyPropertyChanged
 	public TimerState timerState;
 
 	bool discardRequest = false;
-	bool completeEarlierRequest = false;
+	bool completeRequest = false;
 
 
 
@@ -184,16 +215,35 @@ public class TimerPageViewModel : INotifyPropertyChanged
 	}
 
 	// set a timer for pomodoro and start it automatically
-	public void StartTimer()
+	public async void StartTimer()
 	{
 		//
 		timerMode = TimerMode.Pomodoro;
 
 		// set timemeasuring
-		//
-		InitializeTimer();
+		while(true)
+		{
+            InitializeTimer();
+
+            TimerRequest result = await StartTimerLoop();
+
+			if(result == TimerRequest.Exit)
+			{
+				await AppShell.Current.GoToAsync("..");
+			}
+			else
+			{
+				if(this.timerMode == TimerMode.Pomodoro)
+				{
+					this.timerMode = TimerMode.ShortBreak;
+				}
+				else
+				{
+					this.timerMode = TimerMode.Pomodoro;
+				}
+			}
+        }
 		
-		StartTimerLoop();
 	}
 
 	private void InitializeTimer()
@@ -212,7 +262,7 @@ public class TimerPageViewModel : INotifyPropertyChanged
 		}
 	}
 
-	private async void StartTimerLoop()
+	private async Task<TimerRequest> StartTimerLoop()
 	{
 
 		TimeSpan timeleft = this.TimeMeasuring;
@@ -225,45 +275,46 @@ public class TimerPageViewModel : INotifyPropertyChanged
 
 
         this.TimerValue = timeleft;
-        while (true)
+
+		while(true)
 		{
-			while(true)
-			{
 				
-                if (discardRequest)
-				{
-					// exit timer view
-					await Shell.Current.GoToAsync("..");
-				}
-				if(completeEarlierRequest)
-				{
-					// Save log to json file
-					// Started time, finished time,
-					jsoninterface.SavePlogToJson(StartedTime, DateTime.Now, TodoName);
-					break;
-				}
+            if (discardRequest)
+			{
+				discardRequest = false;
+				return TimerRequest.Exit;
+				// exit timer view
+				//await Shell.Current.GoToAsync("..");
+			}
+			if(completeRequest)
+			{
+				completeRequest = false;
+				return TimerRequest.NextStep;
+				// Save log to json file
+				// Started time, finished time,
+			}
 
-                if (this.ExpectedEndtime < DateTime.Now)
-                {
-                    this.timerState = TimerState.Overtime;
+            if (this.ExpectedEndtime < DateTime.Now)
+            {
+                this.timerState = TimerState.Overtime;
 
 
-                }
-				else
-				{
-					this.timerState = TimerState.Counting;
-                    // count the time
-					timepast = DateTime.Now - StartedTime;
-                    timeleft = this.TimeMeasuring - timepast;
+            }
+			else
+			{
+				this.timerState = TimerState.Counting;
+                // count the time
+				timepast = DateTime.Now - StartedTime;
+                timeleft = this.TimeMeasuring - timepast;
 
-                    // update view
-                    this.TimerValue = timeleft; // this updates timervaluetext automatically
-                }
+                // update view
+                this.TimerValue = timeleft; // this updates timervaluetext automatically
+            }
                 
 
-                await Task.Delay(100);
-            }
+            await Task.Delay(100);
         }
+        
 	}
 	
 	// TODO
@@ -290,16 +341,32 @@ public class TimerPageViewModel : INotifyPropertyChanged
 	}
 
 	// TODO
-	public void ControllBtn_Clicked(Object sender, EventArgs e)
+	public async void ControllBtn_Clicked(Object sender, EventArgs e)
 	{
         if (this.timerMode == TimerMode.Pomodoro)
         {
             if (this.timerState == TimerState.Counting)
             {
-				
+				// Pomodoro Counting
+				string request = await AppShell.Current.DisplayActionSheet(null,"Cancel", null, "Discard this session", "Complete earlier");
+				if(request == "Discard this session")
+				{
+					this.discardRequest = true;
+				}
+				else if(request == "Complete earlier")
+				{
+					this.completeRequest = true;
+				}
+				else
+				{
+
+				}
             }
             else
             {
+				// Pomodoro Overtime
+				// Complete session
+				this.completeRequest = true;
 
             }
         }
@@ -307,8 +374,15 @@ public class TimerPageViewModel : INotifyPropertyChanged
         {
             if (this.timerState == TimerState.Counting)
             {
-
+				// ShortBreak Counting
+				// Skip time left and star pomodoro timer
+				this.completeRequest = true;
             }
+			else
+			{
+				this.completeRequest = true;
+
+			}
         }
     }
 
@@ -319,17 +393,27 @@ public class TimerPageViewModel : INotifyPropertyChanged
 		TimeMeasuring += TimeSpan.FromMinutes(5);
 		TimerValue += TimeSpan.FromMinutes(5);
 		this.ExpectedEndtime = StartedTime + TimeMeasuring;
-	}
+
+    }
 	public void TimerSubtract(Object s, EventArgs e)
 	{
-		if((TimeMeasuring - TimeSpan.FromMinutes(5)) > TimeSpan.Zero)
+
+		if(TimeMeasuring > TimeSpan.Zero && TimeMeasuring <= TimeSpan.FromMinutes(1))
 		{
-            TimeMeasuring -= TimeSpan.FromMinutes(5);
-            TimerValue -= TimeSpan.FromMinutes(5);
-            this.ExpectedEndtime = StartedTime + TimeMeasuring;
-        }
-		
-	}
+			// do nothing
+		}
+		else if(TimeMeasuring > TimeSpan.FromMinutes(1) && TimeMeasuring < TimeSpan.FromMinutes(5))
+		{
+			TimeMeasuring = TimeSpan.FromMinutes(1);
+			
+		}
+		else
+		{
+			TimeMeasuring -= TimeSpan.FromMinutes(5);
+		}
+
+        this.ExpectedEndtime = StartedTime + TimeMeasuring;
+    }
 
 	public event PropertyChangedEventHandler PropertyChanged;
 }

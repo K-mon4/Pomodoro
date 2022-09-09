@@ -15,5 +15,15 @@ public class JsonIO
         return true;
     }
 
+    public bool AddTodoto(string todoname)
+    {
+        return true;
+    }
+
+    public bool DeleteTodo(string todoname)
+    {
+        return true;
+    }
+
 }
 

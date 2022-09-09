@@ -3,7 +3,7 @@ using System.ComponentModel;
 using Pomodoro.Models;
 using Pomodoro.Views;
 using CommunityToolkit.Maui.Views;
-
+using System.Windows.Input;
 
 namespace Pomodoro.ViewModels;
 
@@ -15,9 +15,29 @@ public class HomePageViewModel : INotifyPropertyChanged
 
 	TodoListFunctions todolf = new TodoListFunctions();
 
-    public ObservableCollection<Todo> TodoList { get; set; } = new ObservableCollection<Todo>();
+	private ObservableCollection<Todo> _todolist;
+    public ObservableCollection<Todo> TodoList
+	{
+		get => _todolist;
+		set
+		{
+			_todolist = value;
+			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(TodoList)));
+		}
+	}
 
-	private Todo _todoSelected;
+	//public string _todoselectedText;
+	//public string TodoSelectedText
+	//{
+	//	get => _todoselectedText;
+	//	set
+	//	{
+	//		_todoselectedText = value;
+	//		PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(TodoSelectedText)));
+	//	}
+	//}
+
+    private Todo _todoSelected;
 
 	public Todo TodoSelected
 	{
@@ -25,10 +45,21 @@ public class HomePageViewModel : INotifyPropertyChanged
 
 		set
 		{
-			_todoSelected = value;
-			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(TodoSelected)));
-		}
-	}
+			if(value != null)
+			{
+                _todoSelected = value;
+                
+            }
+			else
+			{
+				_todoSelected = Todo.todoDefault;
+			}
+			//TodoSelectedText = _todoSelected.TodoName;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(TodoSelected)));
+
+
+        }
+    }
 
 	public async void createTimerPage(Object sender, EventArgs e)
 	{
@@ -44,11 +75,58 @@ public class HomePageViewModel : INotifyPropertyChanged
 		}
 		else
 		{
-			TodoSelected = new Todo("");
+			TodoSelected = Todo.todoDefault;
 		}
+
+		DeleteCommand = new Command<Todo>(
+			execute: (Todo todo) =>
+			{
+				//TodoList.Remove(todo);
+				todolf.Deletefromdb(todo.TodoName);
+				TodoList = new  ObservableCollection<Todo>(todolf.GetTodoList());
+				if(TodoSelected == todo)
+				{
+					if(TodoList.FirstOrDefault() != null)
+					{
+						TodoSelected = TodoList.FirstOrDefault();
+					}
+					else
+					{
+						TodoSelected = Todo.todoDefault;
+					}
+					//TodoSelectedText = TodoSelected.TodoName;
+				}
+			},
+			canExecute: (Todo todo) =>
+			{
+
+				return true;
+			}
+			);
 	}
 
-    
+	public ICommand DeleteCommand { get; private set; }
+
+    public async void AddCommand(Object Sender, EventArgs e)
+	{
+
+		string todoname = await AppShell.Current.DisplayPromptAsync("Enter Task name", null);
+
+		foreach(Todo todo in TodoList)
+		{
+			if(todo.TodoName == todoname)
+			{
+				// Duplicate
+				return;
+			}
+		}
+
+		// TodoList.Add(new Todo(todoname));
+		todolf.Addtodb(todoname);
+		TodoList = new ObservableCollection<Todo>(todolf.GetTodoList());
+		return;
+		
+	}
 
     public event PropertyChangedEventHandler PropertyChanged;
 
