@@ -3,11 +3,26 @@ namespace Pomodoro.Models
 {
 	public class TodoListFunctions
 	{
+		public databaseIO databaseio = new databaseIO();
 		public TodoListFunctions()
 		{
+
+		}
+		public List<Todo> GetTodoList()
+		{
+			return databaseio.getTodolist();
+		}
+		public void Addtodb(string name)
+		{
+			databaseio.addTodo(name);
 		}
 
-		public List<Todo> GetTodoList()
+		public void Deletefromdb(string name)
+		{
+			databaseio.deleteTodo(name);
+		}
+
+		public List<Todo> GetsampleTodoList()
 		{
 			List<Todo> todolist = new List<Todo>();
 			todolist.Add(new Todo("Todo 1"));

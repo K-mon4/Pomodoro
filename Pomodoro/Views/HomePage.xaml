@@ -5,7 +5,7 @@
              Title="HomePage"
              BindingContext="">
     <ContentPage.ToolbarItems>
-        <ToolbarItem Text="Add" IconImageSource="{FontImage Glyph='+', Color=White, Size=22}" />
+        <ToolbarItem Text="Add" x:Name="AddBtn" IconImageSource="{FontImage Glyph='+', Color=White, Size=22}" />
     </ContentPage.ToolbarItems>
     <VerticalStackLayout>
         <CollectionView x:Name="todoCollection"
@@ -15,14 +15,25 @@
                         ItemsSource="{Binding TodoList}">
             <CollectionView.ItemsLayout>
                 <LinearItemsLayout Orientation="Vertical" ItemSpacing="10"/>
-
             </CollectionView.ItemsLayout>
             <CollectionView.ItemTemplate>
                 <DataTemplate>
-                    <StackLayout>
+                    <SwipeView>
+                        <SwipeView.LeftItems>
+                            <SwipeItem
+                                x:Name="deleteSwipeItem"
+                                Text="Delete"
+                                BackgroundColor="LightPink"
+                                Command="{Binding Source={x:Reference todoCollection}, Path=BindingContext.DeleteCommand}"
+                                CommandParameter="{Binding}"/>
+
+                        </SwipeView.LeftItems>
+                        <StackLayout>
                         <Label Text="{Binding TodoName}" FontSize="22"/>
                         <Label Text="{Binding LastDone}" FontSize="14" TextColor="Silver"/>
-                    </StackLayout>
+                        </StackLayout>
+                    </SwipeView>
+                    
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
@@ -30,7 +41,7 @@
 
         <HorizontalStackLayout>
 
-            <Button x:Name="todoSelectBtn" HeightRequest="50" WidthRequest="100"/>
+            <Button x:Name="todoSelectBtn" BindingContext="{Binding TodoSelected}" Text="{Binding TodoName}" HeightRequest="50" WidthRequest="100"/>
             <Button x:Name="startBtn" Text="Start" HeightRequest="50" WidthRequest="100" />
         </HorizontalStackLayout>
         

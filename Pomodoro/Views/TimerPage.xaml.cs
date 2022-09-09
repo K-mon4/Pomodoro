@@ -26,7 +26,10 @@ public partial class TimerPage : ContentPage
         BindingContext = timerPageViewModel;
         timerAddBtn.Clicked += timerPageViewModel.TimerAdd;
         timerSubBtn.Clicked += timerPageViewModel.TimerSubtract;
+        timerControllBtn.Clicked += timerPageViewModel.ControllBtn_Clicked;
     }
+
+    
 
 
 }

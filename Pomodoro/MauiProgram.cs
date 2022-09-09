@@ -16,7 +16,7 @@ public static class MauiProgram
 			})
 			.UseMauiCommunityToolkit();
 			
-
+		
 		return builder.Build();
 	}
 }
