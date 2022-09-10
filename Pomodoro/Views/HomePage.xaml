@@ -7,11 +7,12 @@
     <ContentPage.ToolbarItems>
         <ToolbarItem Text="Add" x:Name="AddBtn" IconImageSource="{FontImage Glyph='+', Color=White, Size=22}" />
     </ContentPage.ToolbarItems>
-    <VerticalStackLayout>
-        <CollectionView x:Name="todoCollection"
+    <Grid RowDefinitions="4*, 1*">
+        <CollectionView Grid.Row="0"
+                        x:Name="todoCollection"
                         SelectionMode="Single"
                         SelectionChanged="todoCollection_SelectionChanged"
-                        HeightRequest="400"
+                        HeightRequest="600"
                         ItemsSource="{Binding TodoList}">
             <CollectionView.ItemsLayout>
                 <LinearItemsLayout Orientation="Vertical" ItemSpacing="10"/>
@@ -39,12 +40,11 @@
         </CollectionView>
 
 
-        <HorizontalStackLayout>
+            
+        <HorizontalStackLayout Grid.Row="1">
 
             <Button x:Name="todoSelectBtn" BindingContext="{Binding TodoSelected}" Text="{Binding TodoName}" HeightRequest="50" WidthRequest="100"/>
             <Button x:Name="startBtn" Text="Start" HeightRequest="50" WidthRequest="100" />
         </HorizontalStackLayout>
-        
-        
-    </VerticalStackLayout>
+    </Grid>
 </ContentPage>

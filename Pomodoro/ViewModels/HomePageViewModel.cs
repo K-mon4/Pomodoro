@@ -110,8 +110,11 @@ public class HomePageViewModel : INotifyPropertyChanged
     public async void AddCommand(Object Sender, EventArgs e)
 	{
 
-		string todoname = await AppShell.Current.DisplayPromptAsync("Enter Task name", null);
-
+		string todoname = await AppShell.Current.DisplayPromptAsync("Enter Task name", null, cancel:"Cancel");
+		if(todoname == null)
+		{
+			return;
+		}
 		foreach(Todo todo in TodoList)
 		{
 			if(todo.TodoName == todoname)

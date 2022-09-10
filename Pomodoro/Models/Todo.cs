@@ -32,11 +32,11 @@ public class Todo : INotifyPropertyChanged
         }
 		else
 		{
-            LastDone = DateTime.ParseExact(lastdone, "yyyy-MM-dd HH:mm:ss.FFFFFFF", System.Globalization.CultureInfo.CurrentCulture);
+            LastDone = DateTime.ParseExact(lastdone, "yyyy-MM-dd HH:mm:ss.FFFFFFF", null);
         }
 		TodoName = name;
 		
-		CreatedTime = DateTime.ParseExact(created, "yyyy-MM-dd HH:mm:ss.FFFFFFF", System.Globalization.CultureInfo.CurrentCulture);
+		CreatedTime = DateTime.ParseExact(created, "yyyy-MM-dd HH:mm:ss.FFFFFFF", null);
 		TotalTime = totaltime;
     }
 	#nullable disable

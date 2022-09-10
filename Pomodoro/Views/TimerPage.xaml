@@ -3,26 +3,40 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Pomodoro.Views.TimerPage"
              Title="TimerPage">
-    <VerticalStackLayout>
+    <VerticalStackLayout Padding="20" VerticalOptions="Center">
         <Label
             x:Name="todoNameLabel"
             Text="{Binding TodoName}"
             VerticalOptions="Center" 
             HorizontalOptions="Center"
-            FontSize="22"/>
-        <HorizontalStackLayout HorizontalOptions="Center" Spacing="20">
-            <Label Text="{Binding StartedTimeText}"/>
-            <Label Text="{Binding ExpectedEndTimeText}"/>
+            FontSize="22"
+            FontAttributes="Bold"/>
+        <HorizontalStackLayout HorizontalOptions="Center" Spacing="20" Margin="20, 0, 0, 0">
+            <Label Text="{Binding StartedTimeText}" FontSize="10" TextColor="Gray"/>
+            <Label Text="-" FontSize="10" TextColor="Grey"/>
+            <Label Text="{Binding ExpectedEndTimeText}" FontSize="10" TextColor="Gray"/>
 
         </HorizontalStackLayout>
-        <Label x:Name="timerValue"
-               FontSize="30"
-               Text="{Binding TimerValueText}"
-               HorizontalOptions="Center"/>
         <HorizontalStackLayout HorizontalOptions="Center">
+
             <Button
                 x:Name="timerSubBtn"
-                Text="-"/>
+                ImageSource="{FontImage Glyph='-', Color=White, Size=40}"
+                WidthRequest="40"
+                HeightRequest="40"/>
+            <Label x:Name="timerValue"
+                   FontSize="80"
+                   Text="{Binding TimerValueText}"
+                   HorizontalOptions="Center"/>
+            <Button
+                    x:Name="timerAddBtn"
+                    ImageSource="{FontImage Glyph='+', Color=White, Size=40}"
+                    WidthRequest="40"
+                HeightRequest="40"/>
+        </HorizontalStackLayout>
+        
+        <HorizontalStackLayout HorizontalOptions="Center">
+            <Image Source="Resources/Images/hourglass.svg" HeightRequest="15" WidthRequest="15"/>
             <Label
                 x:Name="timeMLabel"
                 Text="{Binding TimeMeasuringText}"
@@ -30,10 +44,7 @@
                 FontSize="15"
                 TextColor="Gray"
                 />
-            <Button
-                x:Name="timerAddBtn"
-                Text="+"
-                />
+            
         </HorizontalStackLayout>
         <Button
             x:Name="timerControllBtn"

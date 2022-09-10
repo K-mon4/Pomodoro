@@ -4,9 +4,50 @@
              x:Class="Pomodoro.Views.LogPage"
              Title="LogPage">
     <VerticalStackLayout>
-        <Label 
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
+        <ScrollView>
+            <!--list of logs per day-->
+            <CollectionView ItemsSource="{Binding LogsList}">
+                <CollectionView.ItemsLayout>
+                    <LinearItemsLayout Orientation="Vertical" ItemSpacing="10"/>
+
+                </CollectionView.ItemsLayout>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <VerticalStackLayout>
+                            <!--list of log of the day-->
+                            <Label x:Name="DayLabel" Text="{Binding DayText}"/>
+                            <CollectionView x:Name="DayLogsview" ItemsSource="{Binding DayLogs}">
+                                <CollectionView.ItemsLayout>
+                                    <LinearItemsLayout Orientation="Vertical" ItemSpacing="10" />
+                                </CollectionView.ItemsLayout>
+                                <CollectionView.ItemTemplate>
+                                    <DataTemplate>
+                                        <HorizontalStackLayout>
+                                            <VerticalStackLayout>
+                                                <Label x:Name="TodoNameLabel" Text="{Binding TodoName}"/>
+                                                <Label x:Name="TimeLabel" Text="{Binding StartedTime}" />
+
+                                            </VerticalStackLayout>
+                                            <Label x:Name="DurationLabel" Text="{Binding Duration}"/>
+
+
+                                        </HorizontalStackLayout>
+                                        
+
+                                    </DataTemplate>
+
+                                </CollectionView.ItemTemplate>
+                            </CollectionView>
+
+                        </VerticalStackLayout>
+                        
+
+                    </DataTemplate>
+
+                </CollectionView.ItemTemplate>
+
+            </CollectionView>
+
+        </ScrollView>
     </VerticalStackLayout>
 </ContentPage>
