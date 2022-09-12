@@ -3,6 +3,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Pomodoro.Views.TimerPage"
              Title="TimerPage">
+    <Shell.TabBarIsVisible>
+        false
+    </Shell.TabBarIsVisible>
     <VerticalStackLayout Padding="20" VerticalOptions="Center">
         <Label
             x:Name="todoNameLabel"
