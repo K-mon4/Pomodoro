@@ -7,17 +7,20 @@
     <ContentPage.ToolbarItems>
         <ToolbarItem Text="Add" x:Name="AddBtn" IconImageSource="{FontImage Glyph='+', Color=White, Size=22}" />
     </ContentPage.ToolbarItems>
-    <VerticalStackLayout>
-        <CollectionView x:Name="todoCollection"
+    <VerticalStackLayout Padding="20" >
+        <ScrollView>
+            <CollectionView Grid.Row="0"
+                        x:Name="todoCollection"
                         SelectionMode="Single"
                         SelectionChanged="todoCollection_SelectionChanged"
-                        HeightRequest="400"
-                        ItemsSource="{Binding TodoList}">
+                        HeightRequest="600"
+                        ItemsSource="{Binding TodoList}"
+                        >
             <CollectionView.ItemsLayout>
                 <LinearItemsLayout Orientation="Vertical" ItemSpacing="10"/>
             </CollectionView.ItemsLayout>
-            <CollectionView.ItemTemplate>
-                <DataTemplate>
+            <CollectionView.ItemTemplate >
+                <DataTemplate >
                     <SwipeView>
                         <SwipeView.LeftItems>
                             <SwipeItem
@@ -28,7 +31,7 @@
                                 CommandParameter="{Binding}"/>
 
                         </SwipeView.LeftItems>
-                        <StackLayout>
+                        <StackLayout Margin="20, 0, 20, 10">
                         <Label Text="{Binding TodoName}" FontSize="22"/>
                         <Label Text="{Binding LastDone}" FontSize="14" TextColor="Silver"/>
                         </StackLayout>
@@ -38,13 +41,17 @@
             </CollectionView.ItemTemplate>
         </CollectionView>
 
+        </ScrollView>
+        
 
-        <HorizontalStackLayout>
 
-            <Button x:Name="todoSelectBtn" BindingContext="{Binding TodoSelected}" Text="{Binding TodoName}" HeightRequest="50" WidthRequest="100"/>
+            
+        <HorizontalStackLayout Grid.Row="1" VerticalOptions="End" HorizontalOptions="Center">
+
+            <Button x:Name="todoSelectBtn" BindingContext="{Binding TodoSelected}"
+                    Text="{Binding TodoName, StringFormat='{0} ▶︎'}" HeightRequest="50"
+                    BackgroundColor="Transparent" TextColor="LightSkyBlue"/>
             <Button x:Name="startBtn" Text="Start" HeightRequest="50" WidthRequest="100" />
         </HorizontalStackLayout>
-        
-        
     </VerticalStackLayout>
 </ContentPage>

@@ -235,6 +235,10 @@ public class TimerPageViewModel : INotifyPropertyChanged
 			{
 				if(this.timerMode == TimerMode.Pomodoro)
 				{
+					databaseIO dbio = new databaseIO();
+					dbio.addLog(this.TodoName, this.StartedTime.ToString("yyyy-MM-dd HH:mm:ss.FFFFFFF"),
+						DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.FFFFFFF"), (Int32)(DateTime.Now-this.StartedTime).TotalMinutes);
+
 					this.timerMode = TimerMode.ShortBreak;
 				}
 				else
@@ -345,22 +349,40 @@ public class TimerPageViewModel : INotifyPropertyChanged
 	{
         if (this.timerMode == TimerMode.Pomodoro)
         {
+            // Pomodoro Counting
+
             if (this.timerState == TimerState.Counting)
             {
-				// Pomodoro Counting
-				string request = await AppShell.Current.DisplayActionSheet(null,"Cancel", null, "Discard this session", "Complete earlier");
-				if(request == "Discard this session")
+				if((DateTime.Now-StartedTime) > TimeSpan.FromMinutes(1))
 				{
-					this.discardRequest = true;
-				}
-				else if(request == "Complete earlier")
-				{
-					this.completeRequest = true;
-				}
+                    string request = await AppShell.Current.DisplayActionSheet(null, "Cancel", null, "Discard this session", "Complete earlier");
+                    if (request == "Discard this session")
+                    {
+                        this.discardRequest = true;
+                    }
+                    else if (request == "Complete earlier")
+                    {
+                        this.completeRequest = true;
+                    }
+                    else
+                    {
+
+                    }
+                }
 				else
 				{
+                    string request = await AppShell.Current.DisplayActionSheet(null, "Cancel", null, "Discard this session");
+                    if (request == "Discard this session")
+                    {
+                        this.discardRequest = true;
+                    }
+                    else
+                    {
 
-				}
+                    }
+                }
+
+				
             }
             else
             {
@@ -398,11 +420,11 @@ public class TimerPageViewModel : INotifyPropertyChanged
 	public void TimerSubtract(Object s, EventArgs e)
 	{
 
-		if(TimeMeasuring > TimeSpan.Zero && TimeMeasuring <= TimeSpan.FromMinutes(1))
+		if(TimerValue > TimeSpan.Zero && TimerValue <= TimeSpan.FromMinutes(1))
 		{
 			// do nothing
 		}
-		else if(TimeMeasuring > TimeSpan.FromMinutes(1) && TimeMeasuring < TimeSpan.FromMinutes(5))
+		else if(TimerValue > TimeSpan.FromMinutes(1) && TimerValue < TimeSpan.FromMinutes(5))
 		{
 			TimeMeasuring = TimeSpan.FromMinutes(1);
 			

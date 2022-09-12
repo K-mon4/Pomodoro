@@ -21,14 +21,17 @@ namespace Pomodoro.Models
     [Table("TodoLog")]
     public class todoLog
     {
-        [PrimaryKey , Unique]
+        [PrimaryKey , AutoIncrement]
         public int Id { get; set; }
 
         [Column("todoname")]
         public string TodoName { get; set; }
 
-        [Column("date")]
-        public string Datetime { get; set; }
+        [Column("startedtime")]
+        public string StartedTime { get; set; }
+
+        [Column("endedtime")]
+        public string EndedTime { get; set; }
 
         // Timespan as minutes
         [Column("duration")]
@@ -65,8 +68,8 @@ namespace Pomodoro.Models
         {
 
             int result = conn.Insert(new TodoDB {
-                TodoName= name, CreatedTime=DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.FFFFFFF"),
-                LastDone= DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.FFFFFF"), TimeTotal=0 });
+                TodoName= name, CreatedTime=DateTime.Now.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss.FFFFFFF"),
+                LastDone= DateTime.Now.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss.FFFFFF"), TimeTotal=0 });
             return result;
         }
 
@@ -76,6 +79,38 @@ namespace Pomodoro.Models
 
 
         }
+
+        public int addLog(string todoname, string startedtime, string endedtime, int duration)
+        {
+            todoLog tdl = new todoLog
+            {
+                TodoName = todoname,
+                StartedTime = startedtime,
+                EndedTime = endedtime,
+                Duration = duration
+            };
+            int result = conn.Insert(tdl);
+
+            TodoDB tdb = (from u in conn.Table<TodoDB>()
+                          where u.TodoName == todoname
+                          select u).FirstOrDefault();
+            if(tdb == null)
+            {
+                addTodo(todoname);
+            }
+            tdb.TimeTotal += duration;
+
+            conn.Update(tdb);
+
+            return result;
+        }
+
+        public List<todoLog> getLogs()
+        {
+            List<todoLog> loglist = conn.Table<todoLog>().ToList();
+            return loglist;
+        }
+
     }
     
 
